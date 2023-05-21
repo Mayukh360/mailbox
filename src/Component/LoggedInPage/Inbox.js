@@ -1,58 +1,74 @@
-import React, { useState, useEffect } from 'react';
-import './Inbox.css';
+import React, { useState,useEffect } from 'react';
+import './Inbox.css'
 
-export default function Sentmail() {
-  const [isVisible, setIsVisible] = useState(true);
-  const enteredEmail = localStorage.getItem('email');
-  const changedEmail = enteredEmail.replace('@', '').replace('.', '');
+
+
+export default function Inbox() {
+    const [isVisible, setIsVisible]=useState(true);
+    const enteredEmail=localStorage.getItem('email');
+    const changedEmail=enteredEmail.replace("@", "").replace(".", "");
   const [emails, setEmails] = useState([
-    { sender: 'sender1@example.com', subject: 'Email Subject 1', content: 'Email Content 1' },
-    { sender: 'sender2@example.com', subject: 'Email Subject 2', content: 'Email Content 2' },
-    { sender: 'sender3@example.com', subject: 'Email Subject 3', content: 'Email Content 3' },
+    { id: 1, sender: 'sender1@example.com', subject: 'Email Subject 1', content: 'Email Content 1' },
+    { id: 2, sender: 'sender2@example.com', subject: 'Email Subject 2', content: 'Email Content 2' },
+    { id: 3, sender: 'sender3@example.com', subject: 'Email Subject 3', content: 'Email Content 3' },
     // Add more email objects as needed
   ]);
 
-  const [expandedEmailIndex, setExpandedEmailIndex] = useState(null);
+  const [expandedEmailId, setExpandedEmailId] = useState(null);
 
-  const toggleEmail = (index) => {
-    setExpandedEmailIndex((prevIndex) => (prevIndex === index ? null : index));
-    console.log(index);
+  const toggleEmail = (id) => {
+    setExpandedEmailId((prevId) => (prevId === id ? null : id));
+    console.log(id);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedEmail}.json`
-        );
-        const data = await response.json();
-        if (response.ok) {
-          const emailsData = Object.values(data);
-          setEmails(emailsData);
-          console.log(emailsData);
-        }
-      } catch (error) {
-        console.error('Error fetching data from the database:', error);
+  // Function to update emails dynamically
+//   const updateEmails = (newEmails) => {
+//     setEmails(newEmails);
+//   };
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedEmail}.json`
+      );
+      const data = await response.json();
+      console.log('DATA', data);
+
+      if (response.ok) {
+        const emailsData = Object.entries(data).map(([id, email]) => ({
+          id: id, // Use the ID from the database as the id
+          sender: email.enteredEmail,
+          subject: email.subject,
+          content: email.emailContent,
+        }));
+        setEmails(emailsData);
+        console.log("Emails Data",emailsData);
       }
-    };
-
-    fetchData();
-  }, [changedEmail]);
-
-  const hideBtnHandler = () => {
-    setIsVisible(false);
+    } catch (error) {
+      console.error('Error fetching data from the database:', error);
+    }
   };
+
+  fetchData();
+}, [changedEmail]);
+
+
+const hideBtnHandler=()=>{
+ setIsVisible(false);
+}
 
   return (
     <div className="inbox-container">
-      {emails.map((email, index) => (
+        
+      {emails.map((email) => (
         <div
-          key={index}
-          className={`email-item ${expandedEmailIndex === index ? 'expanded' : ''}`}
-          onClick={() => toggleEmail(index)}
+          key={email.id}
+          className={`email-item ${expandedEmailId === email.id ? 'expanded' : ''}`}
+          onClick={() => toggleEmail(email.id)}
         >
           <div className="email-header" onClick={hideBtnHandler}>
-            {isVisible && (
+          {isVisible && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-blue-500"
@@ -66,18 +82,19 @@ export default function Sentmail() {
                 />
               </svg>
             )}
-            <span className="email-sender">{email.enteredEmail}</span>
+            <span className="email-sender">{email.sender
+            }</span>
             <span className="email-subject">{email.subject}</span>
           </div>
-          {expandedEmailIndex === index && (
+          {expandedEmailId === email.id && (
             <div className="email-content">
-              <span className="email-sender">{email.enteredEmail}</span>
+              <span className="email-sender">{email.sender}</span>
               <span className="email-subject">{email.subject}</span>
-              <p className="email-body">{email.emailContent}</p>
+              <p className="email-body">{email.content}</p>
             </div>
           )}
         </div>
       ))}
-    </div>
+     </div>
   );
 }
