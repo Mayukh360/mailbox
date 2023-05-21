@@ -31,9 +31,8 @@ export default function Inbox() {
       {emails.map((email, index) => (
         <ul key={index}>
           <li>
-            <h3>Subject :{email.subject}</h3>
-            <p>Email Content :{email.emailContent}</p>
-            <p>Sender's Email id :{email.enteredEmail}</p>
+            <h3>Subject :{email.subject}--- Email Content :{email.emailContent} ---- Sender's Email id :{email.enteredEmail}</h3>
+            
           </li>
         </ul>
       ))}
