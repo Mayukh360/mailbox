@@ -25,6 +25,7 @@ export default function LoggeinPage() {
 
   const handleSendMail = async () => {
     // Logic to send the email
+    const enteredEmail=localStorage.getItem('email');
     const emailContent = editorState.getCurrentContent().getPlainText();
     const changedemail = recipient.replace("@", "").replace(".", "");
     console.log('Recipient:', recipient);
@@ -33,7 +34,7 @@ export default function LoggeinPage() {
     console.log('Email Content:', emailContent);
     // You can implement your email sending functionality here
     const item={
-      subject, emailContent
+      subject, emailContent,enteredEmail
     }
 
      fetch(`https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedemail}.json`,{

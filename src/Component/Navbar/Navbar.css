@@ -1,0 +1,22 @@
+.navbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 200px;
+    height: 100vh;
+    background-color: #f3f4f6;
+  }
+  
+  .nav-item {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    cursor: pointer;
+  }
+  
+  .nav-item:hover {
+    background-color: #e5e7eb;
+  }
+  

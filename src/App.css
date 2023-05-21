@@ -27,6 +27,14 @@
 .App-link {
   color: #61dafb;
 }
+.container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 100vh;
+  margin-left: 220px; /* Adjust the margin to create space between navbar and component */
+  padding: 20px;
+}
 
 @keyframes App-logo-spin {
   from {
