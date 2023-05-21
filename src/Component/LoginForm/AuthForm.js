@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState, useRef } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import classes from "./AuthForm.module.css";
 
@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../store/AuthReducer";
 
 export default function AuthForm() {
-//   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
@@ -73,7 +73,7 @@ export default function AuthForm() {
           dispatch(authActions.islogin(data.idToken));
           console.log(isLoggedIn);
 
-        //   navigate("/loggedin");
+          navigate("/loggedin");
         })
 
         .catch((err) => {
