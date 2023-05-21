@@ -1,0 +1,82 @@
+/* Custom CSS for the Inbox component */
+.inbox-container {
+    width: 100%;
+    max-width: 100rem;
+    margin: 0 auto;
+  }
+  
+  .email-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .email-item:hover {
+    background-color: #f6f6f6;
+  }
+  
+  .email-item.expanded {
+    background-color: #f6f6f6;
+  }
+  
+  .email-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    
+  
+  }
+  
+  .email-sender {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .email-subject {
+    flex: 1;
+    margin: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .email-content {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 10px;
+    display: none;
+  }
+  
+  .email-item.expanded .email-content {
+    display: block;
+  }
+  
+  .email-item.expanded::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 4px;
+    height: 100%;
+    background-color: #ddd;
+  }
+  
+  .email-item:last-child {
+    border-bottom: none;
+  }
+  
+  .email-item:last-child .email-content {
+    margin-bottom: 0;
+  }
+  
+  .email-item:last-child.expanded::before {
+    height: calc(100% - 10px);
+  }
+  

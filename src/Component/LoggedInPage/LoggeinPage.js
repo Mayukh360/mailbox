@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { json } from 'react-router-dom';
+
 
 export default function LoggeinPage() {
   const [editorState, setEditorState] = useState(() =>
@@ -28,6 +28,7 @@ export default function LoggeinPage() {
     const enteredEmail=localStorage.getItem('email');
     const emailContent = editorState.getCurrentContent().getPlainText();
     const changedemail = recipient.replace("@", "").replace(".", "");
+    const changedSendereEmail=enteredEmail.replace("@", "").replace(".", "");
     console.log('Recipient:', recipient);
     console.log('Changed mail:', changedemail);
     console.log('Subject:', subject);
@@ -40,6 +41,11 @@ export default function LoggeinPage() {
      fetch(`https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedemail}.json`,{
       method :'POST',
       body: JSON.stringify(item),
+      headers: { "Content-Type": "application/json" },
+    })
+    fetch(`https://mailbox-project-984db-default-rtdb.firebaseio.com/user/sent/${changedSendereEmail}.json`,{
+      method :'POST',
+      body: JSON.stringify({subject, emailContent,recipient}),
       headers: { "Content-Type": "application/json" },
     })
     setRecipient('');

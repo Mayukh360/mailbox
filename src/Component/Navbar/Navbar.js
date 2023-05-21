@@ -18,12 +18,12 @@ export default function Navbar() {
   return (
     <nav className="flex items-center justify-between bg-gray-200 py-4 px-8">
   <div className="flex items-center">
-    <NavLink to="/" className="mr-8 text-gray-700 font-bold" activeClassName="text-blue-500">Login</NavLink>
+    <NavLink to="/" className="mr-8 text-gray-700 font-bold" activeclassname="text-blue-500">Login</NavLink>
     {isLoggedIn && (
       <>
-        <NavLink to="/loggedin" className="mr-8 text-gray-700 font-bold" activeClassName="text-blue-500">Compose Mail</NavLink>
-        <NavLink to="/inbox" className="mr-8 text-gray-700 font-bold" activeClassName="text-blue-500">Inbox</NavLink>
-        <NavLink to="/sentmail" className="text-gray-700 font-bold" activeClassName="text-blue-500">Sent Mail</NavLink>
+        <NavLink to="/loggedin" className="mr-8 text-gray-700 font-bold" activeclassname="text-blue-500">Compose Mail</NavLink>
+        <NavLink to="/inbox" className="mr-8 text-gray-700 font-bold" activeclassname="text-blue-500">Inbox</NavLink>
+        <NavLink to="/sentmail" className="text-gray-700 font-bold" activeclassname="text-blue-500">Sent Mail</NavLink>
         
       </>
     )}
