@@ -8,9 +8,9 @@ export default function Inbox() {
     const enteredEmail=localStorage.getItem('email');
     const changedEmail=enteredEmail.replace("@", "").replace(".", "");
   const [emails, setEmails] = useState([
-    { id: 1, sender: 'sender1@example.com', subject: 'Email Subject 1', content: 'Email Content 1' },
-    { id: 2, sender: 'sender2@example.com', subject: 'Email Subject 2', content: 'Email Content 2' },
-    { id: 3, sender: 'sender3@example.com', subject: 'Email Subject 3', content: 'Email Content 3' },
+    // { id: 1, sender: 'sender1@example.com', subject: 'Email Subject 1', content: 'Email Content 1' },
+    // { id: 2, sender: 'sender2@example.com', subject: 'Email Subject 2', content: 'Email Content 2' },
+    // { id: 3, sender: 'sender3@example.com', subject: 'Email Subject 3', content: 'Email Content 3' },
     // Add more email objects as needed
   ]);
 
@@ -58,6 +58,25 @@ const hideBtnHandler=()=>{
  setIsVisible(false);
 }
 
+const dltbtnhandler = async (emailId) => {
+  setEmails((prevEmail) => prevEmail.filter((email) => email.id !== emailId));
+  console.log(emailId);
+
+  try {
+    const response = await fetch(
+      `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedEmail}/${emailId}.json`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Error deleting data from the database");
+    }
+  } catch (error) {
+    console.error("Error deleting data from the database:", error);
+  }
+};
+
   return (
     <div className="inbox-container">
         
@@ -85,6 +104,7 @@ const hideBtnHandler=()=>{
             <span className="email-sender">{email.sender
             }</span>
             <span className="email-subject">{email.subject}</span>
+            <button onClick={()=>dltbtnhandler(email.id)} className="mr-6 px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-800">X</button>
           </div>
           {expandedEmailId === email.id && (
             <div className="email-content">
