@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from "react";
-import "./Inbox.css";
+import React, { useState, useEffect } from 'react';
+import './Inbox.css'
 
-export default function Sentmail() {
-  const [isVisible, setIsVisible] = useState(true);
-  const enteredEmail = localStorage.getItem("email");
+export default function Inbox() {
+  const [isVisible, setIsVisible] = useState([]);
+  const enteredEmail = localStorage.getItem('email');
   const changedEmail = enteredEmail.replace("@", "").replace(".", "");
-  const [emails, setEmails] = useState([
-    // { id: 1, sender: 'sender1@example.com', subject: 'Email Subject 1', content: 'Email Content 1' },
-    // { id: 2, sender: 'sender2@example.com', subject: 'Email Subject 2', content: 'Email Content 2' },
-    // { id: 3, sender: 'sender3@example.com', subject: 'Email Subject 3', content: 'Email Content 3' },
-    // Add more email objects as needed
-  ]);
+  const [emails, setEmails] = useState([]);
 
   const [expandedEmailId, setExpandedEmailId] = useState(null);
 
@@ -19,49 +14,49 @@ export default function Sentmail() {
     console.log(id);
   };
 
-  // Function to update emails dynamically
-  //   const updateEmails = (newEmails) => {
-  //     setEmails(newEmails);
-  //   };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/sent/${changedEmail}.json`
+          `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedEmail}.json`
         );
         const data = await response.json();
-        console.log("DATA", data);
+        console.log('DATA', data);
 
         if (response.ok) {
           const emailsData = Object.entries(data).map(([id, email]) => ({
-            id: id, // Use the ID from the database as the id
-            sender: email.recipient,
+            id: id,
+            sender: email.enteredEmail,
             subject: email.subject,
             content: email.emailContent,
           }));
           setEmails(emailsData);
+          setIsVisible(new Array(emailsData.length).fill(true));
           console.log("Emails Data", emailsData);
         }
       } catch (error) {
-        console.error("Error fetching data from the database:", error);
+        console.error('Error fetching data from the database:', error);
       }
     };
 
     fetchData();
   }, [changedEmail]);
 
-  const hideBtnHandler = () => {
-    setIsVisible(false);
+  const hideBtnHandler = (index) => {
+    setIsVisible((prevVisibility) => {
+      const updatedVisibility = [...prevVisibility];
+      updatedVisibility[index] = false;
+      return updatedVisibility;
+    });
   };
-  
+
   const dltbtnhandler = async (emailId) => {
     setEmails((prevEmail) => prevEmail.filter((email) => email.id !== emailId));
     console.log(emailId);
 
     try {
       const response = await fetch(
-        `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/sent/${changedEmail}/${emailId}.json`,
+        `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedEmail}/${emailId}.json`,
         {
           method: "DELETE",
         }
@@ -74,18 +69,19 @@ export default function Sentmail() {
     }
   };
 
+  const counter = isVisible.filter((visible) => visible).length;
+
   return (
     <div className="inbox-container">
-      {emails.map((email) => (
+      <p>Unread Messages: {counter}</p>
+      {emails.map((email, index) => (
         <div
           key={email.id}
-          className={`email-item ${
-            expandedEmailId === email.id ? "expanded" : ""
-          }`}
+          className={`email-item ${expandedEmailId === email.id ? 'expanded' : ''}`}
           onClick={() => toggleEmail(email.id)}
         >
-          <div className="email-header" onClick={hideBtnHandler}>
-            {isVisible && (
+          <div className="email-header" onClick={() => hideBtnHandler(index)}>
+            {isVisible[index] && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-blue-500"
@@ -101,12 +97,7 @@ export default function Sentmail() {
             )}
             <span className="email-sender">{email.sender}</span>
             <span className="email-subject">{email.subject}</span>
-            <button
-              onClick={() => dltbtnhandler(email.id)}
-              className="mr-6 px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-800"
-            >
-              X
-            </button>
+            <button onClick={() => dltbtnhandler(email.id)} className="mr-6 px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-800">X</button>
           </div>
           {expandedEmailId === email.id && (
             <div className="email-content">
