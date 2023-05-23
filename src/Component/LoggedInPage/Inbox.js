@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import './Inbox.css'
+import './Inbox.css';
 import { useDispatch } from 'react-redux';
 import { authActions } from '../../store/AuthReducer';
 
 export default function Inbox() {
-  const token=localStorage.getItem('token');
-  const dispatch=useDispatch();
-  const [isVisible, setIsVisible] = useState([]);
+  const token = localStorage.getItem('token');
+  const dispatch = useDispatch();
   const enteredEmail = localStorage.getItem('email');
   const changedEmail = enteredEmail.replace("@", "").replace(".", "");
   const [emails, setEmails] = useState([]);
-
   const [expandedEmailId, setExpandedEmailId] = useState(null);
+  const [isVisible, setIsVisible] = useState([]);
 
   const toggleEmail = (id) => {
     setExpandedEmailId((prevId) => (prevId === id ? null : id));
@@ -19,7 +18,7 @@ export default function Inbox() {
   };
 
   useEffect(() => {
-    dispatch(authActions.islogin(token))
+    dispatch(authActions.islogin(token));
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -36,7 +35,8 @@ export default function Inbox() {
             content: email.emailContent,
           }));
           setEmails(emailsData);
-          setIsVisible(new Array(emailsData.length).fill(true));
+          const visibilityData = Object.entries(data).map(([id, email]) => email.visibility);
+          setIsVisible(visibilityData);
           console.log("Emails Data", emailsData);
         }
       } catch (error) {
@@ -45,14 +45,34 @@ export default function Inbox() {
     };
 
     fetchData();
-  }, [changedEmail]);
+  }, [changedEmail, dispatch, token]);
 
-  const hideBtnHandler = (index) => {
+  const hideBtnHandler = async (index, emailId) => {
     setIsVisible((prevVisibility) => {
       const updatedVisibility = [...prevVisibility];
       updatedVisibility[index] = false;
       return updatedVisibility;
     });
+
+    try {
+      const response = await fetch(
+        `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/inbox/${changedEmail}/${emailId}.json`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            visibility: false,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Error updating visibility data in the database");
+      }
+    } catch (error) {
+      console.error("Error updating visibility data in the database:", error);
+    }
   };
 
   const dltbtnhandler = async (emailId) => {
@@ -80,8 +100,8 @@ export default function Inbox() {
     <div className="inbox-container">
       {/* <p>Unread Messages: {counter}</p> */}
       <p className="text-lg font-semibold  px-2 py-1 ml-3 mt-4 mb-2  bg-blue-500 text-white rounded-md" style={{ marginRight: '84rem', borderRadius:'10px', }}>
-  Unread Messages: {counter}
-</p>
+        Unread Messages: {counter}
+      </p>
 
       {emails.map((email, index) => (
         <div
@@ -90,7 +110,7 @@ export default function Inbox() {
           onClick={() => toggleEmail(email.id)}
         >
           
-          <div className="email-header" onClick={() => hideBtnHandler(index)}>
+          <div className="email-header" onClick={() => hideBtnHandler(index, email.id)}>
             {isVisible[index] && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"

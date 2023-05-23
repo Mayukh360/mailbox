@@ -29,13 +29,14 @@ export default function LoggeinPage() {
     const emailContent = editorState.getCurrentContent().getPlainText();
     const changedemail = recipient.replace("@", "").replace(".", "");
     const changedSendereEmail=enteredEmail.replace("@", "").replace(".", "");
+    const visibility=true;
     console.log('Recipient:', recipient);
     console.log('Changed mail:', changedemail);
     console.log('Subject:', subject);
     console.log('Email Content:', emailContent);
     // You can implement your email sending functionality here
     const item={
-      subject, emailContent,enteredEmail
+      subject, emailContent,enteredEmail,visibility,
     }
 
      fetch(`https://mailbox-project-984db-default-rtdb.firebaseio.com/user/inbox/${changedemail}.json`,{
