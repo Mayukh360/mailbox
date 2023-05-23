@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './Inbox.css'
+import { useDispatch } from 'react-redux';
+import { authActions } from '../../store/AuthReducer';
 
 export default function Inbox() {
+  const token=localStorage.getItem('token');
+  const dispatch=useDispatch();
   const [isVisible, setIsVisible] = useState([]);
   const enteredEmail = localStorage.getItem('email');
   const changedEmail = enteredEmail.replace("@", "").replace(".", "");
@@ -10,15 +14,17 @@ export default function Inbox() {
   const [expandedEmailId, setExpandedEmailId] = useState(null);
 
   const toggleEmail = (id) => {
+   
     setExpandedEmailId((prevId) => (prevId === id ? null : id));
     console.log(id);
   };
 
   useEffect(() => {
+    dispatch(authActions.islogin(token))
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedEmail}.json`
+          `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/sent/${changedEmail}.json`
         );
         const data = await response.json();
         console.log('DATA', data);
@@ -26,7 +32,7 @@ export default function Inbox() {
         if (response.ok) {
           const emailsData = Object.entries(data).map(([id, email]) => ({
             id: id,
-            sender: email.enteredEmail,
+            sender: email.recipient,
             subject: email.subject,
             content: email.emailContent,
           }));
@@ -56,7 +62,7 @@ export default function Inbox() {
 
     try {
       const response = await fetch(
-        `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedEmail}/${emailId}.json`,
+        `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/sent/${changedEmail}/${emailId}.json`,
         {
           method: "DELETE",
         }
@@ -69,11 +75,11 @@ export default function Inbox() {
     }
   };
 
-  const counter = isVisible.filter((visible) => visible).length;
+  // const counter = isVisible.filter((visible) => visible).length;
 
   return (
     <div className="inbox-container">
-      <p>Unread Messages: {counter}</p>
+      {/* <p>Unread Messages: {counter}</p> */}
       {emails.map((email, index) => (
         <div
           key={email.id}

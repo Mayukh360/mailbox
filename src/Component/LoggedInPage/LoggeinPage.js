@@ -38,7 +38,7 @@ export default function LoggeinPage() {
       subject, emailContent,enteredEmail
     }
 
-     fetch(`https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedemail}.json`,{
+     fetch(`https://mailbox-project-984db-default-rtdb.firebaseio.com/user/inbox/${changedemail}.json`,{
       method :'POST',
       body: JSON.stringify(item),
       headers: { "Content-Type": "application/json" },

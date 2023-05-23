@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import './Inbox.css';
+import './Inbox.css'
 import { useDispatch } from 'react-redux';
 import { authActions } from '../../store/AuthReducer';
 
 export default function Inbox() {
-  const enteredEmail = localStorage.getItem('email');
+  const token=localStorage.getItem('token');
   const dispatch=useDispatch();
-  
-  const changedEmail = enteredEmail.replace('@', '').replace('.', '');
+  const [isVisible, setIsVisible] = useState([]);
+  const enteredEmail = localStorage.getItem('email');
+  const changedEmail = enteredEmail.replace("@", "").replace(".", "");
   const [emails, setEmails] = useState([]);
 
   const [expandedEmailId, setExpandedEmailId] = useState(null);
-  const [visibleEmails, setVisibleEmails] = useState([]);
 
   const toggleEmail = (id) => {
     setExpandedEmailId((prevId) => (prevId === id ? null : id));
@@ -19,26 +19,25 @@ export default function Inbox() {
   };
 
   useEffect(() => {
-    const token=localStorage.getItem('token');
-    dispatch(authActions.islogin(token));
+    dispatch(authActions.islogin(token))
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedEmail}.json`
+          `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/inbox/${changedEmail}.json`
         );
         const data = await response.json();
         console.log('DATA', data);
 
         if (response.ok) {
           const emailsData = Object.entries(data).map(([id, email]) => ({
-            id: id, // Use the ID from the database as the id
+            id: id,
             sender: email.enteredEmail,
             subject: email.subject,
             content: email.emailContent,
           }));
           setEmails(emailsData);
-          setVisibleEmails(Array(emailsData.length).fill(true));
-          console.log('Emails Data', emailsData);
+          setIsVisible(new Array(emailsData.length).fill(true));
+          console.log("Emails Data", emailsData);
         }
       } catch (error) {
         console.error('Error fetching data from the database:', error);
@@ -49,7 +48,7 @@ export default function Inbox() {
   }, [changedEmail]);
 
   const hideBtnHandler = (index) => {
-    setVisibleEmails((prevVisibility) => {
+    setIsVisible((prevVisibility) => {
       const updatedVisibility = [...prevVisibility];
       updatedVisibility[index] = false;
       return updatedVisibility;
@@ -62,29 +61,37 @@ export default function Inbox() {
 
     try {
       const response = await fetch(
-        `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/${changedEmail}/${emailId}.json`,
+        `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/inbox/${changedEmail}/${emailId}.json`,
         {
-          method: 'DELETE',
+          method: "DELETE",
         }
       );
       if (!response.ok) {
-        throw new Error('Error deleting data from the database');
+        throw new Error("Error deleting data from the database");
       }
     } catch (error) {
-      console.error('Error deleting data from the database:', error);
+      console.error("Error deleting data from the database:", error);
     }
   };
 
+  const counter = isVisible.filter((visible) => visible).length;
+
   return (
     <div className="inbox-container">
+      {/* <p>Unread Messages: {counter}</p> */}
+      <p className="text-lg font-semibold  px-2 py-1 ml-3 mt-4 mb-2  bg-blue-500 text-white rounded-md" style={{ marginRight: '84rem', borderRadius:'10px', }}>
+  Unread Messages: {counter}
+</p>
+
       {emails.map((email, index) => (
         <div
           key={email.id}
           className={`email-item ${expandedEmailId === email.id ? 'expanded' : ''}`}
           onClick={() => toggleEmail(email.id)}
         >
+          
           <div className="email-header" onClick={() => hideBtnHandler(index)}>
-            {visibleEmails[index] && (
+            {isVisible[index] && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-blue-500"
@@ -100,12 +107,7 @@ export default function Inbox() {
             )}
             <span className="email-sender">{email.sender}</span>
             <span className="email-subject">{email.subject}</span>
-            <button
-              onClick={() => dltbtnhandler(email.id)}
-              className="mr-6 px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-800"
-            >
-              X
-            </button>
+            <button onClick={() => dltbtnhandler(email.id)} className="mr-6 px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-800">X</button>
           </div>
           {expandedEmailId === email.id && (
             <div className="email-content">
