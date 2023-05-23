@@ -4,6 +4,10 @@
     max-width: 100rem;
     margin: 0 auto;
   }
+  .email-item-content {
+    display: flex;
+    align-items: center;
+  }
   
   .email-item {
     padding: 10px;

@@ -30,9 +30,9 @@ export default function Inbox() {
         if (response.ok) {
           const emailsData = Object.entries(data).map(([id, email]) => ({
             id: id,
-            sender: email.enteredEmail,
+            enteredEmail: email.enteredEmail,
             subject: email.subject,
-            content: email.emailContent,
+            emailContent: email.emailContent,
           }));
           setEmails(emailsData);
           const visibilityData = Object.entries(data).map(([id, email]) => email.visibility);
@@ -53,27 +53,33 @@ export default function Inbox() {
       updatedVisibility[index] = false;
       return updatedVisibility;
     });
-
+  
     try {
       const response = await fetch(
         `https://mailbox-project-984db-default-rtdb.firebaseio.com/user/inbox/${changedEmail}/${emailId}.json`,
         {
-          method: "PATCH",
+          method: "PUT",
           body: JSON.stringify({
+            id: emailId,
+            enteredEmail: emails[index].enteredEmail,
+            subject: emails[index].subject,
+            emailContent: emails[index].emailContent,
             visibility: false,
           }),
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
       if (!response.ok) {
+        console.log('PUT',response)
         throw new Error("Error updating visibility data in the database");
       }
     } catch (error) {
       console.error("Error updating visibility data in the database:", error);
     }
   };
+  
 
   const dltbtnhandler = async (emailId) => {
     setEmails((prevEmail) => prevEmail.filter((email) => email.id !== emailId));
@@ -86,7 +92,9 @@ export default function Inbox() {
           method: "DELETE",
         }
       );
+      
       if (!response.ok) {
+        
         throw new Error("Error deleting data from the database");
       }
     } catch (error) {
@@ -102,14 +110,15 @@ export default function Inbox() {
       <p className="text-lg font-semibold  px-2 py-1 ml-3 mt-4 mb-2  bg-blue-500 text-white rounded-md" style={{ marginRight: '84rem', borderRadius:'10px', }}>
         Unread Messages: {counter}
       </p>
-
+      
       {emails.map((email, index) => (
         <div
           key={email.id}
           className={`email-item ${expandedEmailId === email.id ? 'expanded' : ''}`}
           onClick={() => toggleEmail(email.id)}
         >
-          
+          <div className="email-item-content">
+          <button onClick={() => dltbtnhandler(email.id)} className=" ml-4 mr-4 px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-800">X</button>
           <div className="email-header" onClick={() => hideBtnHandler(index, email.id)}>
             {isVisible[index] && (
               <svg
@@ -125,15 +134,17 @@ export default function Inbox() {
                 />
               </svg>
             )}
-            <span className="email-sender">{email.sender}</span>
+            <span className="email-sender">{email. enteredEmail}</span>
             <span className="email-subject">{email.subject}</span>
-            <button onClick={() => dltbtnhandler(email.id)} className="mr-6 px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-800">X</button>
+            
+          </div>
+          
           </div>
           {expandedEmailId === email.id && (
             <div className="email-content">
-              <span className="email-sender">{email.sender}</span>
+              <span className="email-sender">{email. enteredEmail}</span>
               <span className="email-subject">{email.subject}</span>
-              <p className="email-body">{email.content}</p>
+              <p className="email-body">{email.emailContent}</p>
             </div>
           )}
         </div>

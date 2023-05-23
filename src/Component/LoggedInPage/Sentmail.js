@@ -87,7 +87,7 @@ export default function Inbox() {
           onClick={() => toggleEmail(email.id)}
         >
           <div className="email-header" onClick={() => hideBtnHandler(index)}>
-            {isVisible[index] && (
+            {/* {isVisible[index] && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-blue-500"
@@ -100,7 +100,7 @@ export default function Inbox() {
                   clipRule="evenodd"
                 />
               </svg>
-            )}
+            )} */}
             <span className="email-sender">{email.sender}</span>
             <span className="email-subject">{email.subject}</span>
             <button onClick={() => dltbtnhandler(email.id)} className="mr-6 px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-800">X</button>
