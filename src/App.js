@@ -13,7 +13,7 @@ function App() {
     <div >
       <Navbar/>
       <Routes>
-      <Route path="/" element={<AuthForm />} />
+      <Route path="/mailbox" element={<AuthForm />} />
       <Route path="/loggedin" element={<LoggeinPage/>} />
       <Route path="/inbox" element={<Inbox/>} />
       <Route path="/sentmail" element={<Sentmail/>} />

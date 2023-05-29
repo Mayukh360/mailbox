@@ -16,7 +16,7 @@ export default function Navbar() {
 
   const logOuthandler = () => {
     dispatch(authActions.islogout());
-    navigate("/");
+    navigate("/mailbox");
   };
 
   const toggleSidebar = () => {
