@@ -107,7 +107,7 @@ export default function Inbox() {
   return (
     <div className="inbox-container">
       {/* <p>Unread Messages: {counter}</p> */}
-      <p className="text-lg font-semibold  px-2 py-1 ml-3 mt-4 mb-2  bg-blue-500 text-white rounded-md" style={{ marginRight: '84rem', borderRadius:'10px', }}>
+      <p className="text-lg font-semibold  px-2 py-1 ml-3 mt-4 mb-2  bg-gradient-to-r from-purple-800 to-yellow-600 text-white rounded-md" style={{ marginRight: '84rem', borderRadius:'10px', }}>
         Unread Messages: {counter}
       </p>
       

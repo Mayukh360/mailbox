@@ -34,7 +34,7 @@ export default function LoggeinPage() {
     // console.log('Changed mail:', changedemail);
     // console.log('Subject:', subject);
     // console.log('Email Content:', emailContent);
-    // You can implement your email sending functionality here
+    
     const item={
       subject, emailContent,enteredEmail,visibility,
     }
@@ -55,10 +55,10 @@ export default function LoggeinPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 bg-gray-100 my-6">
+    <div className="max-w-7xl mx-auto p-4 bg-gradient-to-b from-yellow-600 to-purple-800 my-6">
      
       <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2">
+        <label className="block text-gray-100 font-bold mb-2">
           Recipient Email:
         </label>
         <input
@@ -69,7 +69,7 @@ export default function LoggeinPage() {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2">Subject:</label>
+        <label className="block text-gray-100 font-bold mb-2">Subject:</label>
         <input
           type="text"
           value={subject}

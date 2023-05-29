@@ -1,5 +1,11 @@
 
-  
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url("https://free4kwallpapers.com/uploads/originals/2015/09/07/cool-wallpaper-hd.jpg");
+  background-size: cover;
+}
+
   
   .auth {
       margin: 3rem auto;
